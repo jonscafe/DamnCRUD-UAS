@@ -1,14 +1,16 @@
 <?php
 
 function pdo_connect(){
-    $DATABASE_HOST = 'localhost';
+    $DATABASE_HOST = '127.0.0.1';
     $DATABASE_USER = 'useruas';
     $DATABASE_PASS = 'useruas';
     $DATABASE_NAME = 'uas';
     try {
-    	return new PDO('mysql:host=' . $DATABASE_HOST . ';dbname=' . $DATABASE_NAME, $DATABASE_USER, $DATABASE_PASS);
+        $pdo = new PDO("mysql:host=$DATABASE_HOST;dbname=$DATABASE_NAME;charset=utf8", $DATABASE_USER, $DATABASE_PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
     } catch (PDOException $exception) {
-    	die ('Failed to connect to database!');
+        die ('Failed to connect to database! ' . $exception->getMessage());
     }
 }
 
