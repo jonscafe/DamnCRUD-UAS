@@ -1,7 +1,7 @@
 <?php
 
 function pdo_connect(){
-    $DATABASE_HOST = 'db';
+    $DATABASE_HOST = 'localhost';
     $DATABASE_USER = 'useruas';
     $DATABASE_PASS = 'useruas';
     $DATABASE_NAME = 'uas';
