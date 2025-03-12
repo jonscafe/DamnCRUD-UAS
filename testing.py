@@ -65,8 +65,8 @@ class RegisterTestCase(unittest.TestCase):
         # Navigate to the dashboard to verify that the contact was created
         self.browser.get(index_url)
         time.sleep(2)
-        self.assertIn("Test Contact", self.browser.page_source)
-        print(self.browser.page_source)
+        contact_row = self.browser.find_element(By.XPATH, "//tr[td[contains(text(), 'Test Contact')]]")
+        self.assertIn("Test Contact", contact_row.text)
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
