@@ -14,17 +14,16 @@ class RegisterTestCase(unittest.TestCase):
         self.browser = webdriver.Remote(command_executor=server, options=options)
 
     def test_valid_login(self):
-        # Jika URL diberikan via command line gunakan itu, jika tidak pakai default
         if len(sys.argv) > 1:
             url = sys.argv[1] + "/login.php"
         else:
             url = "http://localhost/login.php"
         self.browser.get(url)
-        self.browser.find_element(By.ID, "username").send_keys("admin")
-        self.browser.find_element(By.ID, "InputPassword").send_keys("nimda666!")
+        # Gunakan ID yang sesuai dengan login.php
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.NAME, "submit").click()
         time.sleep(2)
-        # Verifikasi bahwa halaman mengandung "Dashboard"
         self.assertIn("Dashboard", self.browser.page_source)
 
     def test_invalid_login(self):
@@ -33,16 +32,14 @@ class RegisterTestCase(unittest.TestCase):
         else:
             url = "http://localhost/login.php"
         self.browser.get(url)
-        self.browser.find_element(By.ID, "username").send_keys("wronguser")
-        self.browser.find_element(By.ID, "InputPassword").send_keys("wrongpass")
+        self.browser.find_element(By.ID, "inputUsername").send_keys("wronguser")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("wrongpass")
         self.browser.find_element(By.NAME, "submit").click()
         time.sleep(2)
         error_message = self.browser.find_element(By.CLASS_NAME, "alert-danger").text
-        # Pastikan pesan error sesuai (sesuaikan teks pesan error sesuai implementasi)
         self.assertEqual(error_message, "Damn, wrong credentials!!")
 
     def test_create_contact(self):
-        # Login terlebih dahulu
         if len(sys.argv) > 1:
             login_url = sys.argv[1] + "/login.php"
             create_url = sys.argv[1] + "/create.php"
@@ -50,12 +47,10 @@ class RegisterTestCase(unittest.TestCase):
             login_url = "http://localhost/login.php"
             create_url = "http://localhost/create.php"
         self.browser.get(login_url)
-        self.browser.find_element(By.ID, "username").send_keys("admin")
-        self.browser.find_element(By.ID, "InputPassword").send_keys("nimda666!")
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.NAME, "submit").click()
         time.sleep(2)
-
-        # Arahkan ke halaman create.php
         self.browser.get(create_url)
         self.browser.find_element(By.NAME, "name").send_keys("Test Contact")
         self.browser.find_element(By.NAME, "email").send_keys("test@example.com")
@@ -66,7 +61,6 @@ class RegisterTestCase(unittest.TestCase):
         self.assertIn("Test Contact", self.browser.page_source)
 
     def test_update_contact(self):
-        # Login terlebih dahulu
         if len(sys.argv) > 1:
             login_url = sys.argv[1] + "/login.php"
             update_url = sys.argv[1] + "/update.php?id=1"
@@ -74,12 +68,10 @@ class RegisterTestCase(unittest.TestCase):
             login_url = "http://localhost/login.php"
             update_url = "http://localhost/update.php?id=1"
         self.browser.get(login_url)
-        self.browser.find_element(By.ID, "username").send_keys("admin")
-        self.browser.find_element(By.ID, "InputPassword").send_keys("nimda666!")
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.NAME, "submit").click()
         time.sleep(2)
-
-        # Arahkan ke halaman update.php
         self.browser.get(update_url)
         name_field = self.browser.find_element(By.NAME, "name")
         name_field.clear()
@@ -89,7 +81,6 @@ class RegisterTestCase(unittest.TestCase):
         self.assertIn("Updated Contact", self.browser.page_source)
 
     def test_xss_detection(self):
-        # Login terlebih dahulu
         if len(sys.argv) > 1:
             login_url = sys.argv[1] + "/login.php"
             vpage_url = sys.argv[1] + "/vpage.php"
@@ -97,12 +88,10 @@ class RegisterTestCase(unittest.TestCase):
             login_url = "http://localhost/login.php"
             vpage_url = "http://localhost/vpage.php"
         self.browser.get(login_url)
-        self.browser.find_element(By.ID, "username").send_keys("admin")
-        self.browser.find_element(By.ID, "InputPassword").send_keys("nimda666!")
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.NAME, "submit").click()
         time.sleep(2)
-
-        # Arahkan ke halaman vpage.php untuk uji XSS
         self.browser.get(vpage_url)
         xss_payload = '<script>alert("xss")</script>'
         self.browser.find_element(By.NAME, "thing").send_keys(xss_payload)

@@ -58,6 +58,9 @@ jobs:
         
         - name: echo env.URL
           run: echo ${{ env.URL }}
+
+        - name: echo env.URL Request
+          run: curl ${{ env.URL }}
         
         - name: run test script
           run: python testing.py ${{ env.URL }}
