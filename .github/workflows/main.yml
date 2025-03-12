@@ -77,8 +77,8 @@ jobs:
                              -config replacer.full_list(0).initiators=1,2,3,4,6,7'"
           continue-on-error: true
           
-        - name: DAST with ZAP SCAN (Authenticated)
-          uses: hermanka/action-full-scan@master
+        - name: DAST with ZAP SCAN (Enhanced)
+          uses: zaproxy/action-full-scan@master
           with:
             target: ${{ env.URL }}
             network_name: isolated
@@ -89,7 +89,11 @@ jobs:
                    -config replacer.full_list(0).matchstr=Cookie
                    -config replacer.full_list(0).replacement=PHPSESSID=${{ env.SESSION_COOKIE }}
                    -config replacer.full_list(0).regex=false
-                   -config replacer.full_list(0).initiators=1,2,3,4,6,7"
+                   -config replacer.full_list(0).initiators=1,2,3,4,6,7
+                   -config pscanrules.xss.enable=true
+                   -config activeScan.inputVectorTypes=1,2,3
+                   -config activeScan.maxScansInUI=5
+                   -config activeScan.policy=Default Policy"
           continue-on-error: true
 
         - name: Stop Docker
