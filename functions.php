@@ -4,7 +4,7 @@ function pdo_connect(){
     $DATABASE_HOST = 'uas-db';
     $DATABASE_USER = 'root';
     $DATABASE_PASS = 'useruas';
-    $DATABASE_NAME = 'uas';
+    $DATABASE_NAME = 'damncrud';
     try {
         $pdo = new PDO("mysql:host=$DATABASE_HOST;dbname=$DATABASE_NAME;charset=utf8", $DATABASE_USER, $DATABASE_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
