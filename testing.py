@@ -12,19 +12,7 @@ class RegisterTestCase(unittest.TestCase):
         options.add_argument('--ignore-ssl-errors')
         server = 'http://localhost:4444'  # Sesuaikan endpoint Selenium jika diperlukan
         self.browser = webdriver.Remote(command_executor=server, options=options)
-
-    def test_valid_login(self):
-        if len(sys.argv) > 1:
-            url = sys.argv[1] + "/login.php"
-        else:
-            url = "http://localhost/login.php"
-        self.browser.get(url)
-        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
-        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
-        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
-        time.sleep(2)
-        self.assertIn("Dashboard", self.browser.page_source)
-
+        
     def test_invalid_login(self):
         if len(sys.argv) > 1:
             url = sys.argv[1] + "/login.php"
@@ -37,6 +25,18 @@ class RegisterTestCase(unittest.TestCase):
         time.sleep(2)
         error_message = self.browser.find_element(By.CLASS_NAME, "alert-danger").text
         self.assertEqual(error_message, "Damn, wrong credentials!!")
+
+    def test_valid_login(self):
+        if len(sys.argv) > 1:
+            url = sys.argv[1] + "/login.php"
+        else:
+            url = "http://localhost/login.php"
+        self.browser.get(url)
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+        time.sleep(2)
+        self.assertIn("Dashboard", self.browser.page_source)
 
     def test_create_contact(self):
         if len(sys.argv) > 1:
