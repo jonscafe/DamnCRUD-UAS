@@ -2,9 +2,9 @@
 
 function pdo_connect(){
     $DATABASE_HOST = 'localhost';
-    $DATABASE_USER = 'root';
-    $DATABASE_PASS = 'root123';
-    $DATABASE_NAME = 'badcrud';
+    $DATABASE_USER = 'useruas';
+    $DATABASE_PASS = 'useruas';
+    $DATABASE_NAME = 'uas';
     try {
     	return new PDO('mysql:host=' . $DATABASE_HOST . ';dbname=' . $DATABASE_NAME, $DATABASE_USER, $DATABASE_PASS);
     } catch (PDOException $exception) {
