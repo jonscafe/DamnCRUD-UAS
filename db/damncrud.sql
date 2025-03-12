@@ -47,6 +47,7 @@ INSERT INTO `contacts` (`id`, `name`, `email`, `phone`, `title`, `created`) VALU
 	(12, 'Daniel Deacon', 'danieldeacon@example.com', '5003423549', 'Manager', '2019-05-09 19:33:00'),
 	(13, 'Ikram', 'ikram@suhu.co', '0092988122', 'Director', '2019-12-20 10:06:09');
 
+DROP TABLE IF EXISTS `users`;
 -- Dumping structure for table damncrud.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id_user` int(2) NOT NULL AUTO_INCREMENT,
