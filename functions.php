@@ -2,7 +2,7 @@
 
 function pdo_connect(){
     $DATABASE_HOST = 'uas-db';
-    $DATABASE_USER = 'useruas';
+    $DATABASE_USER = 'root';
     $DATABASE_PASS = 'useruas';
     $DATABASE_NAME = 'uas';
     try {
