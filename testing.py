@@ -56,16 +56,16 @@ class RegisterTestCase(unittest.TestCase):
         time.sleep(2)
         # Navigate to create contact page
         self.browser.get(create_url)
-        self.browser.find_element(By.ID, "name").send_keys("Test Contact")
-        self.browser.find_element(By.ID, "email").send_keys("tes@tes")
-        self.browser.find_element(By.ID, "phone").send_keys("1523634")
-        self.browser.find_element(By.ID, "title").send_keys("Cyber Jawara International 2024 - Forensic Challenges")
+        self.browser.find_element(By.ID, "name").send_keys("Test Contact 222")
+        self.browser.find_element(By.ID, "email").send_keys("tes222@tes.com")
+        self.browser.find_element(By.ID, "phone").send_keys("15236344444")
+        self.browser.find_element(By.ID, "title").send_keys("sss")
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
         time.sleep(2)
         # Navigate to the dashboard to verify that the contact was created
         self.browser.get(index_url)
         time.sleep(2)
-        self.assertIn("Test Contact", self.browser.page_source)
+        self.assertIn("Test Contact 222", self.browser.page_source)
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
