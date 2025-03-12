@@ -19,10 +19,9 @@ class RegisterTestCase(unittest.TestCase):
         else:
             url = "http://localhost/login.php"
         self.browser.get(url)
-        # Gunakan ID yang sesuai dengan login.php
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
-        self.browser.find_element(By.NAME, "submit").click()
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
         self.assertIn("Dashboard", self.browser.page_source)
 
@@ -34,7 +33,7 @@ class RegisterTestCase(unittest.TestCase):
         self.browser.get(url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("wronguser")
         self.browser.find_element(By.ID, "inputPassword").send_keys("wrongpass")
-        self.browser.find_element(By.NAME, "submit").click()
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
         error_message = self.browser.find_element(By.CLASS_NAME, "alert-danger").text
         self.assertEqual(error_message, "Damn, wrong credentials!!")
@@ -49,7 +48,7 @@ class RegisterTestCase(unittest.TestCase):
         self.browser.get(login_url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
-        self.browser.find_element(By.NAME, "submit").click()
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
         self.browser.get(create_url)
         self.browser.find_element(By.NAME, "name").send_keys("Test Contact")
@@ -70,7 +69,7 @@ class RegisterTestCase(unittest.TestCase):
         self.browser.get(login_url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
-        self.browser.find_element(By.NAME, "submit").click()
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
         self.browser.get(update_url)
         name_field = self.browser.find_element(By.NAME, "name")
@@ -90,7 +89,7 @@ class RegisterTestCase(unittest.TestCase):
         self.browser.get(login_url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
-        self.browser.find_element(By.NAME, "submit").click()
+        self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
         self.browser.get(vpage_url)
         xss_payload = '<script>alert("xss")</script>'

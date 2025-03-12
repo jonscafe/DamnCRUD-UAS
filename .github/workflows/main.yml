@@ -66,6 +66,12 @@ jobs:
           run: python testing.py ${{ env.URL }}
           continue-on-error: true
 
+        - name: DAST with ZAP SCAN
+          uses: hermanka/action-full-scan@master
+          with:
+            target: ${{ env.URL }}
+            network_name: isolated
+
         - name: 'upload artifacts'
           uses: actions/upload-artifact@v4
           with:
