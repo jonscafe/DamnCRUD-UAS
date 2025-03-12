@@ -43,10 +43,12 @@ class RegisterTestCase(unittest.TestCase):
         if len(sys.argv) > 1:
             login_url = sys.argv[1] + "/login.php"
             create_url = sys.argv[1] + "/create.php"
+            index_url = sys.argv[1] + "/index.php"
         else:
             login_url = "http://localhost/login.php"
             create_url = "http://localhost/create.php"
-        # Login step remains unchanged
+            index_url = "http://localhost/index.php"
+        # Login step
         self.browser.get(login_url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
@@ -54,14 +56,15 @@ class RegisterTestCase(unittest.TestCase):
         time.sleep(2)
         # Navigate to create contact page
         self.browser.get(create_url)
-        # Use the IDs from the new HTML form
         self.browser.find_element(By.ID, "name").send_keys("Test Contact")
-        self.browser.find_element(By.ID, "email").send_keys("test@example.com")
-        self.browser.find_element(By.ID, "phone").send_keys("1234567890")
-        self.browser.find_element(By.ID, "title").send_keys("Tester")
+        self.browser.find_element(By.ID, "email").send_keys("tes@tes")
+        self.browser.find_element(By.ID, "phone").send_keys("1523634")
+        self.browser.find_element(By.ID, "title").send_keys("Cyber Jawara International 2024 - Forensic Challenges")
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
         time.sleep(2)
-        # Check that the new contact is present in the page source
+        # Navigate to the dashboard to verify that the contact was created
+        self.browser.get(index_url)
+        time.sleep(2)
         self.assertIn("Test Contact", self.browser.page_source)
 
     def test_update_contact(self):
@@ -91,24 +94,25 @@ class RegisterTestCase(unittest.TestCase):
         else:
             login_url = "http://localhost/login.php"
             xss_url = "http://localhost/vpage.php"
-        # Log in first
+        # Login first
         self.browser.get(login_url)
         self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
-        # Go to the XSS detection page
+        # Navigate to the XSS page and submit the payload
         self.browser.get(xss_url)
         xss_payload = '<script>alert("xss")</script>'
         self.browser.find_element(By.NAME, "thing").send_keys(xss_payload)
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
         time.sleep(2)
-        # Since the form submits via GET, the payload should appear in the URL.
-        current_url = self.browser.current_url
-        # The payload will be URL encoded; for instance, < becomes %3C.
-        encoded_payload = "%3Cscript%3Ealert(%22xss%22)%3C/script%3E"
-        self.assertIn(encoded_payload, current_url)
-
+        try:
+            # If an alert appears, it means the XSS payload executed
+            alert = self.browser.switch_to.alert
+            self.assertEqual(alert.text, "xss")
+            alert.accept()  # Dismiss the alert
+        except Exception as e:
+            self.fail("XSS alert not triggered.")
 
     def tearDown(self):
         self.browser.quit()
