@@ -55,6 +55,7 @@ class RegisterTestCase(unittest.TestCase):
 
         # Periksa apakah berhasil login dengan mengecek apakah teks "Dashboard" ada di halaman
         self.assertIn("Dashboard", self.browser.page_source, "SQL Injection login should not be successful!")
+        self.assertIn("Damn, wrong credentials!!", self.browser.page_source, "Cant Logged In, SQLI Failed")
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
