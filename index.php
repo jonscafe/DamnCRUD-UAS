@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "functions.php";
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
