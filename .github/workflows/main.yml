@@ -53,10 +53,15 @@ jobs:
         - name: ls debug "/"
           run: docker exec docker-apache ls /
 
-
         - name: install selenium
           run: pip install selenium
         
+        - name: echo env.URL
+          run: echo ${{ env.URL }}
+        
+        - name: run test script
+          run: python testing.py ${{ env.URL }}
+          continue-on-error: true
 
         - name: 'upload artifacts'
           uses: actions/upload-artifact@v4
