@@ -9,7 +9,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-        - name : Checkout the Repo
+        - name: Checkout the Repo
           uses: actions/checkout@v4
 
         - name: Create isolated network
@@ -32,51 +32,51 @@ jobs:
         - name: Selenium Preparation
           run: docker run --network=isolated -d -p 4444:4444 -p 7900:7900 -v /dev/shm:/dev/shm --name firefox-standalone selenium/standalone-firefox:latest
 
-        - name: db setup
+        - name: DB Setup
           run: docker run --network=isolated --name uas-db -e MYSQL_ROOT_PASSWORD=useruas -e MYSQL_DATABASE=uas -v ${{ github.workspace }}/db:/docker-entrypoint-initdb.d -d mysql:5.7
 
-        - name: db wait
+        - name: DB Wait
           run: sleep 10
 
-        - name: db exec
+        - name: DB Exec
           run: docker exec uas-db sh -c 'mysql -h localhost -uroot -puseruas uas < /docker-entrypoint-initdb.d/damncrud.sql'
 
-        - name: wait for selenium hub
+        - name: Wait for Selenium Hub
           run: sh wait.sh
-        
-        - name: check hub
+
+        - name: Check Selenium Hub
           run: curl http://localhost:4444/ui
 
-        - name: ls debug "/var/www/html"
-          run: docker exec docker-apache ls /var/www/html
-
-        - name: ls debug "/"
-          run: docker exec docker-apache ls /
-
-        - name: install selenium
+        - name: Install Selenium
           run: pip install selenium
-        
-        - name: echo env.URL
-          run: echo ${{ env.URL }}
 
-        - name: echo env.URL Request
-          run: curl ${{ env.URL }}
-        
-        - name: run test script
+        - name: Authenticate and Get Session Cookie
+          run: |
+            curl -c cookies.txt -d "username=admin&password=nimda666!" ${{ env.URL }}/login.php
+            SESSION_COOKIE=$(grep PHPSESSID cookies.txt | awk '{print $7}')
+            echo "SESSION_COOKIE=$SESSION_COOKIE" >> $GITHUB_ENV
+
+        - name: Echo Session Cookie
+          run: |
+            echo "Session Cookie: ${{ env.SESSION_COOKIE }}"
+
+        - name: Run Test Script
           run: python testing.py ${{ env.URL }}
           continue-on-error: true
 
-        - name: DAST with ZAP SCAN
+        - name: DAST with ZAP SCAN (Authenticated)
           uses: hermanka/action-full-scan@master
           with:
             target: ${{ env.URL }}
             network_name: isolated
+            cmd_options: >
+              -z "-config replacer.full_list(0).description=auth
+                   -config replacer.full_list(0).enabled=true
+                   -config replacer.full_list(0).matchtype=REQ_HEADER
+                   -config replacer.full_list(0).matchstr=Cookie
+                   -config replacer.full_list(0).replacement=PHPSESSID=${{ env.SESSION_COOKIE }}
+                   -config replacer.full_list(0).regex=false
+                   -config replacer.full_list(0).initiators=1,2,3,4,6,7"
 
-        - name: 'upload artifacts'
-          uses: actions/upload-artifact@v4
-          with:
-            name: Screenshot
-            path: screenshot.png
-
-        - name: stop docker
+        - name: Stop Docker
           run: docker stop docker-apache

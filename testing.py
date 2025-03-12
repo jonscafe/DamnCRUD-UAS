@@ -12,7 +12,6 @@ class RegisterTestCase(unittest.TestCase):
         options.add_argument('--ignore-ssl-errors')
         server = 'http://localhost:4444'  # Sesuaikan endpoint Selenium jika diperlukan
         self.browser = webdriver.Remote(command_executor=server, options=options)
-        self.wait = WebDriverWait(self.driver, 10)
         
     def test_invalid_login(self):
         if len(sys.argv) > 1:
@@ -41,30 +40,33 @@ class RegisterTestCase(unittest.TestCase):
         self.assertIn("Dashboard", self.browser.page_source)
 
     def test_create_contact(self):
-        # Use "Test Contact" as the name, matching your index.php row
-        login_url = (sys.argv[1] + "/login.php") if len(sys.argv) > 1 else "http://localhost/login.php"
-        create_url = (sys.argv[1] + "/create.php") if len(sys.argv) > 1 else "http://localhost/create.php"
-        index_url = (sys.argv[1] + "/index.php") if len(sys.argv) > 1 else "http://localhost/index.php"
-        
+        if len(sys.argv) > 1:
+            login_url = sys.argv[1] + "/login.php"
+            create_url = sys.argv[1] + "/create.php"
+            index_url = sys.argv[1] + "/index.php"
+        else:
+            login_url = "http://localhost/login.php"
+            create_url = "http://localhost/create.php"
+            index_url = "http://localhost/index.php"
         # Login step
         self.browser.get(login_url)
-        self.wait.until(EC.visibility_of_element_located((By.ID, "inputUsername"))).send_keys("admin")
+        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
-        self.wait.until(lambda d: "Dashboard" in d.page_source)
-        
-        # Navigate to the create contact page
+        time.sleep(2)
+        # Navigate to create contact page
         self.browser.get(create_url)
-        self.wait.until(EC.visibility_of_element_located((By.ID, "name"))).send_keys("Test Contact")
-        self.browser.find_element(By.ID, "email").send_keys("tes222@tes.com")
-        self.browser.find_element(By.ID, "phone").send_keys("15236344444")
+        self.browser.find_element(By.ID, "name").send_keys("Test Contact")
+        self.browser.find_element(By.ID, "email").send_keys("tes@tes")
+        self.browser.find_element(By.ID, "phone").send_keys("1523634")
         self.browser.find_element(By.ID, "title").send_keys("sss")
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
-        
-        # After submission, go to the dashboard to verify the new contact appears
+        time.sleep(2)
+        # Navigate to the dashboard to verify that the contact was created
         self.browser.get(index_url)
-        self.wait.until(lambda d: "Test Contact" in d.page_source)
+        time.sleep(2)
         self.assertIn("Test Contact", self.browser.page_source)
+        print(self.browser.page_source)
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
