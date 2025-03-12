@@ -63,6 +63,9 @@ jobs:
         - name: Echo Session Cookie
           run: |
             echo "Session Cookie: ${{ env.SESSION_COOKIE }}"
+        
+        - name: Fix ZAP Permissions
+          run: docker exec zap chmod -R 777 /zap/wrk/
 
         - name: Run ZAP Spider
           uses: zaproxy/action-baseline@v0.10.0
@@ -81,7 +84,7 @@ jobs:
           uses: zaproxy/action-full-scan@master
           with:
             target: ${{ env.URL }}
-            network_name: isolated
+            
             cmd_options: >
               -z "-config replacer.full_list(0).description=auth
                    -config replacer.full_list(0).enabled=true
