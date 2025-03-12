@@ -12,6 +12,7 @@ class RegisterTestCase(unittest.TestCase):
         options.add_argument('--ignore-ssl-errors')
         server = 'http://localhost:4444'  # Sesuaikan endpoint Selenium jika diperlukan
         self.browser = webdriver.Remote(command_executor=server, options=options)
+        self.wait = WebDriverWait(self.driver, 10)
         
     def test_invalid_login(self):
         if len(sys.argv) > 1:
