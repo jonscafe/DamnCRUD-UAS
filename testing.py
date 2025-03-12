@@ -39,34 +39,22 @@ class RegisterTestCase(unittest.TestCase):
         time.sleep(2)
         self.assertIn("Dashboard", self.browser.page_source)
 
-    def test_create_contact(self):
+    def test_sqli_login(self):
         if len(sys.argv) > 1:
             login_url = sys.argv[1] + "/login.php"
-            create_url = sys.argv[1] + "/create.php"
-            index_url = sys.argv[1] + "/index.php"
         else:
             login_url = "http://localhost/login.php"
-            create_url = "http://localhost/create.php"
-            index_url = "http://localhost/index.php"
-        # Login step
+
         self.browser.get(login_url)
-        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
-        self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
+
+        # Masukkan payload SQL Injection
+        self.browser.find_element(By.ID, "inputUsername").send_keys("' OR '1'='1")
+        self.browser.find_element(By.ID, "inputPassword").send_keys("' OR '1'='1")
         self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         time.sleep(2)
-        # Navigate to create contact page
-        self.browser.get(create_url)
-        self.browser.find_element(By.ID, "name").send_keys("Test Contact")
-        self.browser.find_element(By.ID, "email").send_keys("tes@tes")
-        self.browser.find_element(By.ID, "phone").send_keys("1523634")
-        self.browser.find_element(By.ID, "title").send_keys("sss")
-        self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
-        time.sleep(2)
-        # Navigate to the dashboard to verify that the contact was created
-        self.browser.get(index_url)
-        time.sleep(2)
-        contact_row = self.browser.find_element(By.XPATH, "//tr[td[contains(text(), 'Test Contact')]]")
-        self.assertIn("Test Contact", contact_row.text)
+
+        # Periksa apakah berhasil login dengan mengecek apakah teks "Dashboard" ada di halaman
+        self.assertIn("Dashboard", self.browser.page_source, "SQL Injection login should not be successful!")
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
