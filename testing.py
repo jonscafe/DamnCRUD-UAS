@@ -40,32 +40,30 @@ class RegisterTestCase(unittest.TestCase):
         self.assertIn("Dashboard", self.browser.page_source)
 
     def test_create_contact(self):
-        if len(sys.argv) > 1:
-            login_url = sys.argv[1] + "/login.php"
-            create_url = sys.argv[1] + "/create.php"
-            index_url = sys.argv[1] + "/index.php"
-        else:
-            login_url = "http://localhost/login.php"
-            create_url = "http://localhost/create.php"
-            index_url = "http://localhost/index.php"
+        # Use "Test Contact" as the name, matching your index.php row
+        login_url = (sys.argv[1] + "/login.php") if len(sys.argv) > 1 else "http://localhost/login.php"
+        create_url = (sys.argv[1] + "/create.php") if len(sys.argv) > 1 else "http://localhost/create.php"
+        index_url = (sys.argv[1] + "/index.php") if len(sys.argv) > 1 else "http://localhost/index.php"
+        
         # Login step
         self.browser.get(login_url)
-        self.browser.find_element(By.ID, "inputUsername").send_keys("admin")
+        self.wait.until(EC.visibility_of_element_located((By.ID, "inputUsername"))).send_keys("admin")
         self.browser.find_element(By.ID, "inputPassword").send_keys("nimda666!")
         self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
-        time.sleep(2)
-        # Navigate to create contact page
+        self.wait.until(lambda d: "Dashboard" in d.page_source)
+        
+        # Navigate to the create contact page
         self.browser.get(create_url)
-        self.browser.find_element(By.ID, "name").send_keys("Test Contact 222")
+        self.wait.until(EC.visibility_of_element_located((By.ID, "name"))).send_keys("Test Contact")
         self.browser.find_element(By.ID, "email").send_keys("tes222@tes.com")
         self.browser.find_element(By.ID, "phone").send_keys("15236344444")
         self.browser.find_element(By.ID, "title").send_keys("sss")
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
-        time.sleep(2)
-        # Navigate to the dashboard to verify that the contact was created
+        
+        # After submission, go to the dashboard to verify the new contact appears
         self.browser.get(index_url)
-        time.sleep(2)
-        self.assertIn("Test Contact 222", self.browser.page_source)
+        self.wait.until(lambda d: "Test Contact" in d.page_source)
+        self.assertIn("Test Contact", self.browser.page_source)
 
     def test_update_contact(self):
         if len(sys.argv) > 1:
