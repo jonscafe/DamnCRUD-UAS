@@ -36,7 +36,7 @@ jobs:
           run: docker run --network=isolated --name uas-db -e MYSQL_ROOT_PASSWORD=useruas -e MYSQL_DATABASE=uas -v ${{ github.workspace }}/db:/docker-entrypoint-initdb.d -d mysql:5.7
 
         - name: db wait
-          run: sleep 30
+          run: sleep 10
 
         - name: db exec
           run: docker exec uas-db sh -c 'mysql -h localhost -uroot -puseruas uas < /docker-entrypoint-initdb.d/damncrud.sql'
