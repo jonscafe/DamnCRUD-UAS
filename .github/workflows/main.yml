@@ -39,7 +39,7 @@ jobs:
           run: sleep 30
 
         - name: db exec
-          run: docker exec quiz-db sh -c 'mysql -h localhost -uroot -ppassword quiz_pengupil < /docker-entrypoint-initdb.d/quiz_pengupil.sql'
+          run: docker exec uas-db sh -c 'mysql -h localhost -uroot -ppassword uas < /docker-entrypoint-initdb.d/damncrud.sql'
           
         - name: wait for selenium hub
           run: sh wait.sh
