@@ -39,7 +39,7 @@ jobs:
           run: sleep 30
 
         - name: db exec
-          run: docker exec uas-db sh -c 'mysql -h localhost -uroot -ppassword uas < /docker-entrypoint-initdb.d/damncrud.sql'
+          run: docker exec uas-db sh -c 'mysql -h localhost -uuas -ppassword uas < /docker-entrypoint-initdb.d/damncrud.sql'
           
         - name: wait for selenium hub
           run: sh wait.sh
